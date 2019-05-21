@@ -1,0 +1,4 @@
+这是一个WebAPI的demo
+里面采用了swagger和ef
+swagger汉化和接口文档，ef可获取数据库数据并显示
+
