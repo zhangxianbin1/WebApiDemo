@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using WebApiDemo.Models;
@@ -16,37 +17,51 @@ namespace WebApiDemo.Controllers
         /// <summary>
         /// 获取所有数据
         /// </summary>
-        public IEnumerable<Users> Get()
+        [HttpPost]
+        public async Task<IEnumerable<Users>> GetAllUser()
         {
-            return users;
+            return await Task.Run(() =>
+            {
+                return users;
+            });
         }
         /// <summary>
-        /// GET: api/Users/5
+        /// 根据id获取特别的数据
         /// </summary>
-        public IHttpActionResult Get(int id)
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUser(int id)
         {
-            test1Entities test = new Models.test1Entities();
-            var user = test.user.ToList();// users.FirstOrDefault((p) => p.id == id); if (user == null) { return NotFound(); }
-            return Ok(user);
+            return await Task.Run(() =>
+            {
+                var user = users.FirstOrDefault((p) => p.id == id);
+                return Ok(user);
+            });
         }
         /// <summary>
-        /// POST: api/Users
+        /// 通过实体方法获取mysql数据库中的数据
         /// </summary>
-        public void Post([FromBody]string value)
+        [HttpGet]
+        public async Task<IHttpActionResult>  GetDataInMysql()
         {
+            return await Task.Run(() =>
+            {
+                test1Entities test = new Models.test1Entities();
+                var user = test.user.ToList();
+                return Ok(user);
+            });
         }
-
         /// <summary>
-        /// PUT: api/Users/5
+        /// 根据id获取数据库中特别的数据
         /// </summary>
-        public void Put(int id, [FromBody]string value)
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSpecialUser(int id)
         {
-        }
-        /// <summary>
-        /// DELETE: api/Users/5
-        /// </summary>
-        public void Delete(int id)
-        {
+            return await Task.Run(() =>
+            {
+                test1Entities test = new Models.test1Entities();
+                var user = test.user.Where((p) => p.ID == id).FirstOrDefault();
+                return Ok(user);
+            });
         }
     }
 }
